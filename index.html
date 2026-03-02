@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometric Bird Recreator - HTML Canvas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Navbar styles */
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav h1 { margin: 0; font-size: 1.5rem; }
+        nav p { margin: 0.2rem 0 0; font-size: 0.9rem; opacity: 0.8; }
+
+        /* Main application container */
+        .main-container {
+            flex: 1; /* Pushes footer down */
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* Left side: Canvas */
+        .canvas-section {
+            flex: 1;
+            text-align: center;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        #birdCanvas {
+            border: 1px solid #ddd;
+            display: block;
+            margin: 10px auto;
+            /* Match the reference image aspect ratio as closely as possible */
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Right side: Original Reference */
+        .reference-section {
+            flex: 1;
+            text-align: center;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .reference-section img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            display: block;
+            margin: 10px auto;
+        }
+
+        /* Specific section labels */
+        .section-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #222;
+            color: #bbb;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h1>Canvas Bird Recreator</h1>
+        <p>Recreación Geométrica via JavaScript & HTML5 Canvas</p>
+    </nav>
+
+    <main class="main-container">
+
+        <section class="canvas-section">
+            <div class="section-label">Imagen Programada (HTML5 Canvas)</div>
+            <p style="font-size: 0.9rem; color: #777;">Esta imagen se dibuja dinámicamente usando el código JS adjunto.</p>
+            <canvas id="birdCanvas" width="1280" height="720"></canvas>
+        </section>
+
+        <section class="reference-section">
+            <div class="section-label">Imagen Original de Referencia</div>
+            <p style="font-size: 0.9rem; color: #777;">Esta es la imagen `image_4.png` utilizada como modelo.</p>
+            <img src="image_4.png" alt="Geometric Bird Reference Image">
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Aplicación de Dibujo Programático | Desarrollado por: [Nombre del Programador]</p>
+        <p>© 2023 | Asignatura de Computación Gráfica Web</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
