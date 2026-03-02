@@ -66,20 +66,30 @@ function drawBackground(ctx, canvas, colors) {
     ctx.fillRect(0, canvas.height - groundHeight, canvas.width, groundHeight);
 }
 
+/** * FONDOS Y NUBES */
 function drawClouds(ctx, colors) {
-    const drawCloud = (x, y) => {
+    // Añadimos un tercer parámetro 'escala' para controlar el tamaño de cada nube
+    const drawCloud = (x, y, escala = 1) => {
+        ctx.save(); // Guardamos el estado actual del lienzo
+        ctx.translate(x, y); // Movemos el punto de origen a las coordenadas de la nube
+        ctx.scale(escala, escala); // Aplicamos el multiplicador de tamaño
         ctx.fillStyle = colors.cloudWhite;
         ctx.beginPath();
-        ctx.arc(x, y, 40, 0, Math.PI * 2);
-        ctx.arc(x + 40, y - 30, 50, 0, Math.PI * 2);
-        ctx.arc(x + 90, y - 10, 45, 0, Math.PI * 2);
-        ctx.arc(x + 50, y + 20, 40, 0, Math.PI * 2);
+        // Dibujamos los círculos de la nube relativos a su propio centro (0,0)
+        ctx.arc(0, 0, 40, 0, Math.PI * 2);
+        ctx.arc(40, -30, 50, 0, Math.PI * 2);
+        ctx.arc(90, -10, 45, 0, Math.PI * 2);
+        ctx.arc(50, 20, 40, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillRect(x - 10, y - 5, 110, 45); // Base plana
+        
+        // Base plana geométrica
+        ctx.fillRect(-10, -5, 110, 45); 
+
+        ctx.restore(); // Restauramos el lienzo para que no afecte a las siguientes figuras
     };
-    drawCloud(170, 180);
-    drawCloud(850, 200);
-    drawCloud(600, 550);
+    drawCloud(200, 150, 1.5); 
+    drawCloud(850, 200, 1.5); 
+    drawCloud(800, 550, 1);
 }
 
 /** * ALAS GEOMÉTRICAS (Matriz de Triángulos Entrelazados) */
