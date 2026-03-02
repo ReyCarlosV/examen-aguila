@@ -1,0 +1,70 @@
+body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Navbar styles */
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav h1 { margin: 0; font-size: 1.5rem; }
+        nav p { margin: 0.2rem 0 0; font-size: 0.9rem; opacity: 0.8; }
+
+        /* Main application container */
+        .main-container {
+            display: flex;
+            flex-direction: row; /* Fuerza a que los hijos se pongan a los lados */
+            flex-wrap: nowrap;   /* Evita que se bajen si la pantalla es pequeña */
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;           /* Espacio entre las dos imágenes */
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Asegúrate de que cada sección ocupe el mismo espacio */
+        .canvas-section, .reference-section {
+            flex: 1; 
+            min-width: 0; /* Evita que se desborden */
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        /* Controla el tamaño de las imágenes para que no empujen a la otra */
+        #birdCanvas, .reference-section img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+        }
+
+        /* Specific section labels */
+        .section-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #222;
+            color: #bbb;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+            font-size: 0.85rem;
+        }
