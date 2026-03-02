@@ -76,20 +76,19 @@ function drawClouds(ctx, colors) {
         ctx.fillStyle = colors.cloudWhite;
         ctx.beginPath();
         // Dibujamos los círculos de la nube relativos a su propio centro (0,0)
-        ctx.arc(0, 0, 40, 0, Math.PI * 2);
-        ctx.arc(40, -30, 50, 0, Math.PI * 2);
-        ctx.arc(90, -10, 45, 0, Math.PI * 2);
-        ctx.arc(50, 20, 40, 0, Math.PI * 2);
+        ctx.arc(-15, 9, 25, 0, Math.PI * 2);
+        ctx.arc(60, -30, 50, 0, Math.PI * 2);
+        ctx.arc(100, -5, 40, 0, Math.PI * 2);
+        ctx.arc(15, -25, 35, 0, Math.PI * 2);
         ctx.fill();
-        
         // Base plana geométrica
-        ctx.fillRect(-10, -5, 110, 45); 
+        ctx.fillRect(-10, -25, 120, 60); 
 
         ctx.restore(); // Restauramos el lienzo para que no afecte a las siguientes figuras
     };
-    drawCloud(200, 150, 1.5); 
-    drawCloud(850, 200, 1.5); 
-    drawCloud(800, 550, 1);
+    drawCloud(120, 175, 1.9); 
+    drawCloud(1000, 200, 1.7); 
+    drawCloud(850, 500, 1);
 }
 
 /** * ALAS GEOMÉTRICAS (Matriz de Triángulos Entrelazados) */
