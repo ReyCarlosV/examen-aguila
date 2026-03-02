@@ -1,9 +1,9 @@
 /**
  * ==============================================================================
- * APLICACIÓN: Recreación Geométrica de Águila V4 (Versión Fiel al Original)
- * DESCRIPCIÓN: Generación de mosaico de alas utilizando un algoritmo de abanico 
- * con más de 40 triángulos individuales superpuestos para recrear la textura 
- * puntiaguda original. Total de figuras básicas utilizadas: > 70.
+ * APLICACIÓN: Recreación Geométrica de Águila V5 (Versión Definitiva)
+ * DESCRIPCIÓN: Utiliza una matriz de paralelogramos vectoriales para generar 
+ * un mosaico de triángulos perfectamente entrelazados, idéntico a la imagen 
+ * original. Cumple con el requisito de más de 30 figuras (> 70 figuras reales).
  * ==============================================================================
  */
 
@@ -26,32 +26,30 @@ function initDraw() {
         lightBlueWing: "#91D6EB"  
     };
 
-    // 1. Limpiar y Fondo
+    // 1. Limpiar lienzo y dibujar fondo
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas, colors);
     drawClouds(ctx, colors);
 
-    // 2. Mover Punto Cero (0,0) al centro exacto
+    // 2. Mover el Punto Cero (0,0) al centro exacto del lienzo
     ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2 + 20);
+    ctx.translate(canvas.width / 2, canvas.height / 2 - 50);
 
-    // 3. Cola (Capa inferior)
+    // 3. Cola (Capa Inferior)
     drawTail(ctx, colors);
     
-    // 4. Ala Izquierda (Abanico de Triángulos)
+    // 4. Ala Izquierda (Generador de Matriz Geométrica)
     ctx.save();
-    ctx.translate(-40, -20); // Posición del hombro
-    drawFeatheredWing(ctx, colors);
+    drawGeometricWingMatrix(ctx, colors);
     ctx.restore();
 
-    // 5. Ala Derecha (Efecto Espejo)
+    // 5. Ala Derecha (Efecto Espejo Perfecto)
     ctx.save();
-    ctx.translate(40, -20);  // Posición del hombro
-    ctx.scale(-1, 1);        // Refleja todo horizontalmente
-    drawFeatheredWing(ctx, colors);
+    ctx.scale(-1, 1); // Refleja todo horizontalmente
+    drawGeometricWingMatrix(ctx, colors);
     ctx.restore();
 
-    // 6. Cuerpo, Patas y Cabeza (Capas superiores)
+    // 6. Cuerpo, Patas y Cabeza (Capas Superiores)
     drawBody(ctx, colors);
     drawFeet(ctx, colors);
     drawHead(ctx, colors);
@@ -59,7 +57,7 @@ function initDraw() {
     ctx.restore();
 }
 
-/** * FONDOS Y NUBES (Figuras: 2 Rectángulos, 12 Círculos, 3 Rectángulos) */
+/** * FONDOS Y NUBES */
 function drawBackground(ctx, canvas, colors) {
     ctx.fillStyle = colors.skyBlue;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -69,129 +67,118 @@ function drawBackground(ctx, canvas, colors) {
 }
 
 function drawClouds(ctx, colors) {
-    const drawStylizedCloud = (x, y) => {
+    const drawCloud = (x, y) => {
         ctx.fillStyle = colors.cloudWhite;
         ctx.beginPath();
-        // Círculos superpuestos
         ctx.arc(x, y, 40, 0, Math.PI * 2);
         ctx.arc(x + 40, y - 30, 50, 0, Math.PI * 2);
         ctx.arc(x + 90, y - 10, 45, 0, Math.PI * 2);
         ctx.arc(x + 50, y + 20, 40, 0, Math.PI * 2);
         ctx.fill();
-        // Base plana para que se vea geométrica
-        ctx.fillRect(x - 20, y, 130, 40);
+        ctx.fillRect(x - 10, y - 5, 110, 45); // Base plana
     };
-
-    drawStylizedCloud(180, 200);
-    drawStylizedCloud(850, 220);
-    drawStylizedCloud(600, 580);
+    drawCloud(170, 180);
+    drawCloud(850, 200);
+    drawCloud(600, 550);
 }
 
-/** * ALAS GEOMÉTRICAS (Figuras: > 40 Triángulos en total) 
- * Dibuja un abanico de plumas puntiagudas para igualar la imagen original.
- */
-function drawFeatheredWing(ctx, colors) {
-    // 1. Base sólida dorada para que no haya huecos
+/** * ALAS GEOMÉTRICAS (Matriz de Triángulos Entrelazados) */
+function drawGeometricWingMatrix(ctx, colors) {
+    // 1. Base sólida del ala para que no se vea el cielo a través de los triángulos
     ctx.fillStyle = colors.deepGold;
     ctx.beginPath();
-    ctx.moveTo(20, 20);
-    ctx.lineTo(-300, -120); // Extremo superior
-    ctx.lineTo(-340, -40);  // Extremo medio
-    ctx.lineTo(-100, 140);  // Extremo inferior
+    ctx.moveTo(0, 20);
+    ctx.lineTo(-300, -100); 
+    ctx.lineTo(-350, 80); 
+    ctx.lineTo(-80, 180);
     ctx.closePath();
     ctx.fill();
 
-    const pattern = [colors.darkBlueWing, colors.lightGold, colors.lightBlueWing, colors.deepGold];
+    // 2. Función para dibujar triángulos con delineado
+    const drawTri = (x1, y1, x2, y2, x3, y3, color) => {
+        ctx.fillStyle = color;
+        ctx.beginPath(); 
+        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.lineTo(x3, y3); 
+        ctx.closePath(); 
+        ctx.fill();
+        ctx.strokeStyle = "rgba(0,0,0,0.15)"; 
+        ctx.lineWidth = 1; 
+        ctx.stroke();
+    };
 
-    // 2. Ciclo para generar el mosaico de plumas puntiagudas
-    // 4 filas de plumas, cada fila tiene menos plumas conforme bajamos
-    for (let row = 0; row < 4; row++) {
-        let numFeathers = 7 - row; // Fila 0: 7 plumas, Fila 1: 6 plumas, etc.
-        
-        for (let f = 0; f < numFeathers; f++) {
-            ctx.save();
-            
-            // Interpolar posiciones para que sigan la forma del ala
-            let x = -40 - (f * 40) - (row * 15);
-            let y = -20 - (f * 15) + (row * 35);
-            
-            ctx.translate(x, y);
-            
-            // Rotación progresiva para que las plumas se abran como abanico
-            ctx.rotate(-Math.PI / 12 + (f * 0.04)); 
+    // 3. Configuración de la cuadrícula matemática
+    let startX = -40, startY = 20;
+    let dx1 = -65, dy1 = -25; // Vector hacia arriba/afuera (hueso del ala)
+    let dx2 = -35, dy2 = 40;  // Vector hacia abajo (puntas de plumas)
+    let colorPattern = [colors.darkBlueWing, colors.lightGold, colors.lightBlueWing, colors.deepGold];
 
-            // Color basado en el patrón
-            ctx.fillStyle = pattern[(row + f) % 4];
+    // 4. Bucle para generar el mosaico sin fisuras
+    for(let col = 0; col < 4; col++) {
+        for(let row = 0; row < 3; row++) {
+            // Puntos del paralelogramo base
+            let px = startX + (col * dx1) + (row * dx2);
+            let py = startY + (col * dy1) + (row * dy2);
+            let p2x = px + dx1, p2y = py + dy1;
+            let p3x = px + dx2, p3y = py + dy2;
+            let p4x = px + dx1 + dx2, p4y = py + dy1 + dy2;
+
+            // Triángulo Superior
+            let color1 = colorPattern[(col + row) % 4];
+            drawTri(px, py, p2x, p2y, p3x, p3y, color1);
             
-            // Dibujar un triángulo puntiagudo (Figura básica)
-            ctx.beginPath();
-            ctx.moveTo(0, 0);          // Base interior
-            ctx.lineTo(-55, -25);      // Punta superior
-            ctx.lineTo(-35, 25);       // Punta inferior
-            ctx.closePath();
-            ctx.fill();
-
-            // Delineado para separar cada pluma geométricamente
-            ctx.strokeStyle = "rgba(0,0,0,0.15)";
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
-            ctx.restore();
+            // Triángulo Inferior (completa el paralelogramo)
+            let color2 = colorPattern[(col + row + 1) % 4]; 
+            drawTri(p2x, p2y, p3x, p3y, p4x, p4y, color2);
         }
     }
 }
 
-/** * CUERPO Y COLA (Figuras: 1 Elipse, 4 Rectángulos) */
+/** * CUERPO Y COLA */
 function drawBody(ctx, colors) {
     ctx.fillStyle = colors.deepGold;
     ctx.beginPath();
-    ctx.ellipse(0, 0, 150, 100, -Math.PI / 18, 0, Math.PI * 2);
+    ctx.ellipse(0, 50, 130, 80, (-20.25 * Math.PI) / 180, 0, Math.PI * 2);
     ctx.fill();
 }
 
 function drawTail(ctx, colors) {
     ctx.fillStyle = colors.lightGold;
     ctx.save();
-    ctx.translate(-110, 50); 
-    ctx.rotate(Math.PI * 0.75); // Rotar hacia abajo a la izquierda
+    ctx.translate(-130, 90); 
+    ctx.rotate(Math.PI * 0.8); 
 
-    const w = 110, h = 25;
+    const w = 120, h = 30;
     for (let i = 0; i < 4; i++) {
-        ctx.fillRect(0, i * 22, w, h);
+        ctx.fillRect(0, i * 25, w, h);
         ctx.strokeStyle = colors.deepGold;
         ctx.lineWidth = 2;
-        ctx.strokeRect(0, i * 22, w, h);
+        ctx.strokeRect(0, i * 25, w, h);
     }
     ctx.restore();
 }
 
-/** * CABEZA Y PATAS (Figuras: 2 Círculos, 3 Elipses, 1 Polígono) */
+/** * CABEZA Y PATAS */
 function drawHead(ctx, colors) {
     ctx.save();
-    ctx.translate(130, -50); 
-
+    ctx.translate(130, -10); // Posición de la cabeza
+    
     // Cabeza
     ctx.fillStyle = colors.deepGold;
-    ctx.beginPath(); ctx.arc(0, 0, 60, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(0, 0, 65, 0, Math.PI * 2); ctx.fill();
 
-    // Ojo (3 capas concéntricas)
-    const eyeX = 20, eyeY = -15;
-    ctx.fillStyle = colors.darkBlueWing;
-    ctx.beginPath(); ctx.arc(eyeX, eyeY, 14, 0, Math.PI * 2); ctx.fill();
-    
-    ctx.fillStyle = colors.lightBlueWing;
-    ctx.beginPath(); ctx.arc(eyeX, eyeY, 9, 0, Math.PI * 2); ctx.fill();
-    
-    ctx.fillStyle = colors.darkBlueWing;
-    ctx.beginPath(); ctx.ellipse(eyeX + 2, eyeY, 4, 7, 0, 0, Math.PI * 2); ctx.fill();
+    // Ojo concéntrico
+    const eyeX = 25, eyeY = -15;
+    ctx.fillStyle = colors.darkBlueWing; ctx.beginPath(); ctx.arc(eyeX, eyeY, 15, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = colors.lightBlueWing; ctx.beginPath(); ctx.arc(eyeX, eyeY, 10, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = colors.darkBlueWing; ctx.beginPath(); ctx.ellipse(eyeX + 2, eyeY, 5, 8, 0, 0, Math.PI * 2); ctx.fill();
 
-    // Pico Geométrico (Polígono de 4 lados)
+    // Pico Geométrico
     ctx.fillStyle = colors.lightGold;
     ctx.beginPath();
-    ctx.moveTo(55, -5);   
-    ctx.lineTo(95, 10);   
-    ctx.lineTo(50, 25);   
-    ctx.lineTo(40, 10);   
+    ctx.moveTo(60, -5);   
+    ctx.lineTo(105, 10);   
+    ctx.lineTo(55, 25);   
+    ctx.lineTo(45, 10);   
     ctx.fill();
 
     ctx.restore();
@@ -199,6 +186,6 @@ function drawHead(ctx, colors) {
 
 function drawFeet(ctx, colors) {
     ctx.fillStyle = colors.lightGold;
-    ctx.beginPath(); ctx.ellipse(10, 90, 15, 25, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(40, 80, 15, 25, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-20, 140, 15, 25, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(20, 130, 15, 25, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
 }
