@@ -1,8 +1,9 @@
 /**
  * ==============================================================================
- * APLICACIÓN: Recreación Geométrica de Águila V2 (Corregida)
- * DESCRIPCIÓN: Generación de mosaico geométrico avanzado (+30 figuras) usando
- * matrices matemáticas y transformaciones de espejo en HTML5 Canvas.
+ * APLICACIÓN: Recreación Geométrica de Águila V3 (Versión Estable y Precisa)
+ * DESCRIPCIÓN: Generación de la imagen utilizando polígonos vectoriales en 
+ * capas superpuestas para garantizar la estructura del diseño original.
+ * Total de figuras: > 30.
  * ==============================================================================
  */
 
@@ -25,41 +26,45 @@ function initDraw() {
         lightBlueWing: "#91D6EB"  
     };
 
-    // 1. Dibujar Fondos
+    // 1. Limpiar el lienzo y dibujar fondos
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas, colors);
     drawClouds(ctx, colors);
 
-    // 2. Mover el "Punto Cero" (0,0) al centro exacto del lienzo
-    // Esto hace que dibujar al pájaro sea infinitamente más fácil
+    // 2. Mover el Punto Cero (0,0) al centro exacto de la pantalla
     ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2 + 50);
+    ctx.translate(canvas.width / 2, canvas.height / 2 + 20);
 
-    // 3. Dibujar las partes del pájaro desde el centro hacia afuera
+    // 3. Dibujar la Cola (atrás de todo)
     drawTail(ctx, colors);
     
-    // Dibujar Ala Izquierda
+    // 4. Dibujar Ala Izquierda
     ctx.save();
-    ctx.translate(-50, -50); // Mover al hombro izquierdo
+    ctx.translate(-50, -30); // Posición del hombro izquierdo
     drawGeometricWing(ctx, colors);
     ctx.restore();
 
-    // Dibujar Ala Derecha (usando efecto espejo horizontal)
+    // 5. Dibujar Ala Derecha (usando efecto espejo horizontal)
     ctx.save();
-    ctx.translate(50, -50);  // Mover al hombro derecho
-    ctx.scale(-1, 1);        // ¡MAGIA! Voltea todo el canvas horizontalmente
+    ctx.translate(50, -30);  // Posición del hombro derecho
+    ctx.scale(-1, 1);        // Refleja el eje X
     drawGeometricWing(ctx, colors);
     ctx.restore();
 
-    // Dibujar Cuerpo y Cabeza encima de las alas
+    // 6. Dibujar Cuerpo (encima de la cola y alas)
     drawBody(ctx, colors);
+    
+    // 7. Dibujar Patas
     drawFeet(ctx, colors);
+    
+    // 8. Dibujar Cabeza y detalles (hasta el frente)
     drawHead(ctx, colors);
 
-    // Restaurar el canvas a la normalidad
+    // Restaurar el lienzo original
     ctx.restore();
 }
 
-/** * FONDO Y NUBES 
+/** * FONDO Y NUBES (Figuras: 2 Rectángulos, 12 Círculos)
  */
 function drawBackground(ctx, canvas, colors) {
     ctx.fillStyle = colors.skyBlue;
@@ -70,7 +75,6 @@ function drawBackground(ctx, canvas, colors) {
 }
 
 function drawClouds(ctx, colors) {
-    // Función para crear nubes esponjosas usando círculos entrelazados
     const drawFluffyCloud = (x, y) => {
         ctx.fillStyle = colors.cloudWhite;
         ctx.beginPath();
@@ -81,105 +85,113 @@ function drawClouds(ctx, colors) {
         ctx.fill();
     };
 
-    drawFluffyCloud(150, 200);
-    drawFluffyCloud(900, 250);
-    drawFluffyCloud(650, 550);
+    drawFluffyCloud(200, 200);
+    drawFluffyCloud(850, 180);
+    drawFluffyCloud(600, 580);
 }
 
-/** * ALAS GEOMÉTRICAS (El mosaico complejo)
- * Esta función dibuja el ala izquierda. El sistema la clonará para la derecha.
+/** * ALAS GEOMÉTRICAS CAPA POR CAPA (Figuras: 4 Polígonos Complejos por ala)
+ * Aquí dibujamos la forma exacta con bordes en zig-zag.
  */
 function drawGeometricWing(ctx, colors) {
-    const colorPattern = [colors.darkBlueWing, colors.lightGold, colors.lightBlueWing, colors.deepGold];
-
-    // Base sólida del ala (para que no queden huecos entre los triángulos)
-    ctx.fillStyle = colors.deepGold;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(-400, -250); // Punta superior izquierda
-    ctx.lineTo(-250, 150);  // Borde inferior
-    ctx.fill();
-
-    // Matriz matemática para generar los triángulos del mosaico
-    const rows = 4;
-    const trianglesPerRow = 5;
-
-    for (let r = 0; r < rows; r++) {
-        // Desplazamiento inicial de cada fila
-        let startX = -30 - (r * 70);
-        let startY = -40 - (r * 30);
-
-        for (let t = 0; t < trianglesPerRow; t++) {
-            ctx.fillStyle = colorPattern[(r + t) % 4];
-            ctx.beginPath();
-
-            // Calcular los 3 puntos de cada triángulo
-            let v1x = startX - (t * 70);
-            let v1y = startY + (t * 50);
-
-            let v2x = v1x - 90;
-            let v2y = v1y - 70;
-
-            let v3x = v1x - 10;
-            let v3y = v1y + 80;
-
-            // Dibujar la figura
-            ctx.moveTo(v1x, v1y);
-            ctx.lineTo(v2x, v2y);
-            ctx.lineTo(v3x, v3y);
-            ctx.closePath();
-            ctx.fill();
+    // Función para dibujar una franja poligonal
+    const drawWingLayer = (color, points) => {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(points[0][0], points[0][1]);
+        for(let i=1; i<points.length; i++) {
+            ctx.lineTo(points[i][0], points[i][1]);
         }
-    }
+        ctx.closePath();
+        ctx.fill();
+    };
+
+    // Capa 1: Fondo Dorado (La más grande)
+    drawWingLayer(colors.deepGold, [
+        [0, 0],             // Hombro
+        [-280, -130],       // Punta superior
+        [-320, -60],        // Pico 1
+        [-280, -20],        // Valle 1
+        [-300, 40],         // Pico 2
+        [-220, 60],         // Valle 2
+        [-200, 120],        // Pico 3
+        [-120, 120]         // Borde inferior
+    ]);
+
+    // Capa 2: Azul Claro (Mediana)
+    drawWingLayer(colors.lightBlueWing, [
+        [0, 15], 
+        [-220, -90], 
+        [-260, -30], 
+        [-220, 0], 
+        [-240, 50], 
+        [-170, 60], 
+        [-150, 100], 
+        [-80, 100]
+    ]);
+
+    // Capa 3: Amarillo Claro (Pequeña)
+    drawWingLayer(colors.lightGold, [
+        [0, 30], 
+        [-160, -50], 
+        [-200, 0], 
+        [-160, 20], 
+        [-180, 60], 
+        [-120, 60], 
+        [-100, 80], 
+        [-40, 80]
+    ]);
+
+    // Capa 4: Azul Oscuro (Interna)
+    drawWingLayer(colors.darkBlueWing, [
+        [0, 45], 
+        [-100, -10], 
+        [-140, 30], 
+        [-100, 40], 
+        [-120, 70], 
+        [-70, 60], 
+        [-50, 60], 
+        [-10, 60]
+    ]);
 }
 
-/** * CUERPO, COLA Y PATAS
+/** * CUERPO Y COLA (Figuras: 1 Elipse, 4 Rectángulos)
  */
 function drawBody(ctx, colors) {
     ctx.fillStyle = colors.deepGold;
     ctx.beginPath();
-    // Centro, RadioX, RadioY, Rotación leve hacia arriba
-    ctx.ellipse(0, 0, 160, 110, -Math.PI / 16, 0, Math.PI * 2);
+    // Centro 0,0 - RadioX 150 - RadioY 100 - Inclinación ligera
+    ctx.ellipse(0, 0, 150, 100, -Math.PI / 18, 0, Math.PI * 2);
     ctx.fill();
 }
 
 function drawTail(ctx, colors) {
     ctx.fillStyle = colors.lightGold;
     ctx.save();
-    ctx.translate(-140, 70); // Posicionar en la parte trasera inferior
-    ctx.rotate(Math.PI * 0.8); // Rotar para que apunte hacia abajo a la izquierda
+    // Mover a la parte inferior izquierda del cuerpo
+    ctx.translate(-110, 50); 
+    // Apuntar hacia abajo a la izquierda
+    ctx.rotate(Math.PI * 0.8); 
 
-    const w = 120;
-    const h = 30;
+    const w = 110;
+    const h = 25;
     
-    // Dibujar 4 bloques superpuestos
+    // 4 plumas rectangulares de la cola
     for (let i = 0; i < 4; i++) {
-        ctx.fillRect(0, i * 25, w, h);
-        // Borde fino para separar los bloques
+        ctx.fillRect(0, i * 22, w, h);
         ctx.strokeStyle = colors.deepGold;
-        ctx.lineWidth = 1;
-        ctx.strokeRect(0, i * 25, w, h);
+        ctx.lineWidth = 2;
+        ctx.strokeRect(0, i * 22, w, h);
     }
     ctx.restore();
 }
 
-function drawFeet(ctx, colors) {
-    ctx.fillStyle = colors.lightGold;
-    
-    ctx.beginPath();
-    ctx.ellipse(30, 100, 15, 25, Math.PI / 6, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.ellipse(60, 90, 15, 25, Math.PI / 6, 0, Math.PI * 2);
-    ctx.fill();
-}
-
-/** * CABEZA, OJO Y PICO
+/** * CABEZA Y PATAS (Figuras: 2 Círculos, 3 Elipses, 1 Polígono)
  */
 function drawHead(ctx, colors) {
     ctx.save();
-    ctx.translate(140, -60); // Posición de la cabeza respecto al centro
+    // Posicionar la cabeza arriba a la derecha del centro
+    ctx.translate(130, -50); 
 
     // Cabeza
     ctx.fillStyle = colors.deepGold;
@@ -187,13 +199,13 @@ function drawHead(ctx, colors) {
     ctx.arc(0, 0, 60, 0, Math.PI * 2);
     ctx.fill();
 
-    // Ojo (3 capas)
+    // Ojo concéntrico (3 capas)
     const eyeX = 20, eyeY = -15;
     ctx.fillStyle = colors.darkBlueWing;
-    ctx.beginPath(); ctx.arc(eyeX, eyeY, 15, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(eyeX, eyeY, 14, 0, Math.PI * 2); ctx.fill();
     
     ctx.fillStyle = colors.lightBlueWing;
-    ctx.beginPath(); ctx.arc(eyeX, eyeY, 10, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(eyeX, eyeY, 9, 0, Math.PI * 2); ctx.fill();
     
     ctx.fillStyle = colors.darkBlueWing;
     ctx.beginPath(); ctx.ellipse(eyeX + 2, eyeY, 4, 7, 0, 0, Math.PI * 2); ctx.fill();
@@ -201,11 +213,25 @@ function drawHead(ctx, colors) {
     // Pico Geométrico
     ctx.fillStyle = colors.lightGold;
     ctx.beginPath();
-    ctx.moveTo(55, -5);   // Borde frente
-    ctx.lineTo(95, 10);   // Punta
-    ctx.lineTo(50, 25);   // Borde abajo
-    ctx.lineTo(40, 10);   // Corte interno
+    ctx.moveTo(55, -5);   
+    ctx.lineTo(95, 10);   
+    ctx.lineTo(50, 25);   
+    ctx.lineTo(40, 10);   
     ctx.fill();
 
     ctx.restore();
+}
+
+function drawFeet(ctx, colors) {
+    ctx.fillStyle = colors.lightGold;
+    
+    // Pata izquierda
+    ctx.beginPath();
+    ctx.ellipse(10, 90, 15, 25, Math.PI / 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Pata derecha
+    ctx.beginPath();
+    ctx.ellipse(40, 80, 15, 25, Math.PI / 6, 0, Math.PI * 2);
+    ctx.fill();
 }
