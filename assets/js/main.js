@@ -23,7 +23,8 @@ function initDraw() {
         deepGold: "#BF9A1E",      
         lightGold: "#F7EA9B",     
         darkBlueWing: "#13316E",  
-        lightBlueWing: "#91D6EB"  
+        lightBlueWing: "#91D6EB",  
+        lightDeepGold: "#e2be47"   
     };
 
     // 1. Limpiar lienzo y dibujar fondo
@@ -35,14 +36,14 @@ function initDraw() {
     ctx.save();
     ctx.translate(canvas.width / 2, canvas.height / 2 - 50);
 
-    // 3. Cola (Capa Inferior)
-    drawTail(ctx, colors);
+    
     
     // 4. Ala Izquierda (Generador de Matriz Geométrica)
     ctx.save();
     drawGeometricWingMatrix(ctx, colors);
     ctx.restore();
 
+    drawTail(ctx, colors);
     // 5. Ala Derecha (Efecto Espejo Perfecto)
     ctx.save();
     ctx.scale(-1, 1); // Refleja todo horizontalmente
@@ -50,7 +51,9 @@ function initDraw() {
     ctx.restore();
 
     // 6. Cuerpo, Patas y Cabeza (Capas Superiores)
+    drawMusloUno(ctx, colors);
     drawBody(ctx, colors);
+    drawMusloDos(ctx, colors);
     drawFeet(ctx, colors);
     drawHead(ctx, colors);
 
@@ -82,13 +85,27 @@ function drawClouds(ctx, colors) {
         ctx.arc(15, -25, 35, 0, Math.PI * 2);
         ctx.fill();
         // Base plana geométrica
-        ctx.fillRect(-10, -25, 120, 60); 
-
+        ctx.fillRect(-10, -25, 120, 60);
         ctx.restore(); // Restauramos el lienzo para que no afecte a las siguientes figuras
     };
     drawCloud(120, 175, 1.9); 
     drawCloud(1000, 200, 1.7); 
-    drawCloud(850, 500, 1);
+    drawCloud(850, 525, 1);
+}
+
+/** * MUSLOS (Figuras: 2 Círculos) */
+function drawMusloUno(ctx, colors) {
+    ctx.fillStyle = colors.lightDeepGold; // Usamos el color del cuerpo
+    ctx.beginPath();
+    ctx.arc(100, 0, 20, 0, Math.PI * 2); 
+    ctx.fill();
+}
+
+function drawMusloDos(ctx, colors) {
+    ctx.fillStyle = colors.lightDeepGold; // Usamos el color del cuerpo
+    ctx.beginPath();
+    ctx.arc(-80, 85, 60, 0, Math.PI * 2); 
+    ctx.fill();
 }
 
 /** * ALAS GEOMÉTRICAS (Matriz de Triángulos Entrelazados) */
@@ -153,7 +170,7 @@ function drawBody(ctx, colors) {
 function drawTail(ctx, colors) {
     ctx.fillStyle = colors.lightGold;
     ctx.save();
-    ctx.translate(-130, 90); 
+    ctx.translate(-50, 125); 
     ctx.rotate(Math.PI * 0.8); 
 
     const w = 120, h = 30;
