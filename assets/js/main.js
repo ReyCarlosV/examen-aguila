@@ -53,8 +53,8 @@ function initDraw() {
     // 6. Cuerpo, Patas y Cabeza (Capas Superiores)
     drawMusloUno(ctx, colors);
     drawBody(ctx, colors);
-    drawMusloDos(ctx, colors);
     drawFeet(ctx, colors);
+    drawMusloDos(ctx, colors);
     drawHead(ctx, colors);
 
     ctx.restore();
@@ -97,14 +97,14 @@ function drawClouds(ctx, colors) {
 function drawMusloUno(ctx, colors) {
     ctx.fillStyle = colors.lightDeepGold; // Usamos el color del cuerpo
     ctx.beginPath();
-    ctx.arc(100, 0, 20, 0, Math.PI * 2); 
+    ctx.arc(-60, 90, 55, 0, Math.PI * 2); 
     ctx.fill();
 }
 
 function drawMusloDos(ctx, colors) {
     ctx.fillStyle = colors.lightDeepGold; // Usamos el color del cuerpo
     ctx.beginPath();
-    ctx.arc(-80, 85, 60, 0, Math.PI * 2); 
+    ctx.arc(-80, 85, 50, 0, Math.PI * 2); 
     ctx.fill();
 }
 
@@ -212,6 +212,7 @@ function drawHead(ctx, colors) {
 
 function drawFeet(ctx, colors) {
     ctx.fillStyle = colors.lightGold;
-    ctx.beginPath(); ctx.ellipse(-20, 140, 15, 25, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(20, 130, 15, 25, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-100, 130, 20, 25, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-90, 130, 20, 25, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-80, 130, 20, 25, Math.PI / 6, 0, Math.PI * 2); ctx.fill();
 }
