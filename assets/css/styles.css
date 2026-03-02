@@ -1,15 +1,49 @@
-/* * styles.css
- * La mayoría de los estilos ahora son manejados por las clases utilitarias de Bootstrap 5.
- * Aquí solo agregamos ajustes muy específicos si son necesarios.
- */
-
-canvas {
-    /* Mantiene la proporción correcta del dibujo sin importar el tamaño de la pantalla */
-    object-fit: contain;
-    max-height: 60vh; 
+/* Tipografía global */
+body {
+    font-family: 'Poppins', sans-serif;
+    /* Un degradado oscuro moderno en lugar de negro plano */
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f8fafc;
 }
 
-.reference-section img {
+/* Navbar semi-transparente */
+.custom-navbar {
+    background-color: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px); /* Efecto cristal */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Tarjetas con efecto Glassmorphism (Cristal esmerilado oscuro) */
+.custom-card {
+    background-color: rgba(30, 41, 59, 0.5) !important;
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 1.25rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Animación sutil al pasar el mouse por encima de la tarjeta */
+.custom-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+/* Sombras y bordes para resaltar el dibujo y la imagen original */
+.custom-media-shadow {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    /* Obligamos a que el fondo de la imagen sea blanco por si tiene transparencias */
+    background-color: #ffffff; 
+}
+
+/* Footer oscuro */
+.custom-footer {
+    background-color: #0f172a;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Evitar que las imágenes se desborden verticalmente en pantallas muy grandes */
+canvas, img {
     object-fit: contain;
     max-height: 60vh;
 }
